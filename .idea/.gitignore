@@ -1,6 +1,0 @@
-.pytest_cache/
-venv/
-*.xml
-.idea
-dist/
-*.iml
