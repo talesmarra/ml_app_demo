@@ -1,17 +1,13 @@
 """
 Main module
 """
+import json
+
 from flask import Flask, request, jsonify
-import pandas as pd
-import joblib
-from sklearn.preprocessing import StandardScaler
+import tensorflow as tf
+import tensorflow_text
 
 app = Flask(__name__)
-
-
-def scale(payload):
-    scaler = StandardScaler().fit(payload)
-    return scaler.transform(payload)
 
 
 @app.route("/")
@@ -21,10 +17,16 @@ def home():
 
 @app.route("/predict", methods=['POST'])
 def predict():
-    clf = joblib.load("boston_housing_prediction.joblib")
-    inference_payload = pd.DataFrame(request.json)
-    scaled_payload = scale(inference_payload)
-    prediction = list(clf.predict(scaled_payload))
+    inference_payload = request.json
+    examples = tf.constant([inference_payload['text']])
+    print(examples)
+    reloaded_model = tf.saved_model.load('./model')
+    score = tf.sigmoid(reloaded_model.signatures['serving_default'](examples)['classifier']).numpy()[0][0]
+    if score > 0.5:
+        prediction = 'good'
+    else:
+        prediction = 'bad'
+    prediction += f' with score: {score}'
     return jsonify({'prediction': prediction})
 
 
