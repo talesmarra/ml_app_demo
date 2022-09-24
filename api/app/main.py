@@ -9,6 +9,8 @@ import tensorflow_text
 
 app = Flask(__name__)
 
+reloaded_model = tf.saved_model.load('model')
+
 
 @app.route("/")
 def home():
@@ -19,8 +21,6 @@ def home():
 def predict():
     inference_payload = request.json
     examples = tf.constant([inference_payload['text']])
-    print(examples)
-    reloaded_model = tf.saved_model.load('./model')
     score = tf.sigmoid(reloaded_model.signatures['serving_default'](examples)['classifier']).numpy()[0][0]
     if score > 0.5:
         prediction = 'good'

@@ -4,3 +4,7 @@ venv/
 .idea
 dist/
 *.iml
+*.pb
+api/app/model/variables/
+api/app/model/assets/
+*.tar.gz

@@ -1,10 +1,6 @@
 FROM python:3.7
 
-ARG VERSION
-
-LABEL org.label-schema.version=$VERSION
-
-COPY ./requirements.txt /app/requirements.txt
+COPY requirements.txt ./app/requirements.txt
 
 WORKDIR /app
 
